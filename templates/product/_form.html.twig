@@ -1,0 +1,34 @@
+{{ form_start(form) }}
+
+<div class="row">
+  <div class="col">
+    <div class="form-group">
+      {{ form_row(form.store_link, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_row(form.price, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_row(form.photo, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_row(form.file, {'attr': {'class': 'form-control'}}) }}
+    </div>
+  </div>
+  <div class="col">
+    {% if product.photo is not empty%}
+      <img class="product-photo img-thumbnail float-end cursor-pointer" src="{{ asset('uploads/photo/' ~ product.photo) }}" alt="">
+    {% else %}
+      <img class="product-photo rounded img-thumbnail float-end cursor-pointer" src="{{ asset('assets/images/placeholder.png') }}" alt="">
+    {% endif %}
+  </div>
+</div>
+
+<button class="btn {{ button_color|default('btn-outline-primary') }}  mt-3">{{ button_label|default('Save product') }}</button>
+{{ form_end(form) }}

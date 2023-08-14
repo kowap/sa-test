@@ -1,0 +1,6 @@
+{
+    "require-dev": {
+        "dbrekelmans/bdi": "^1.0",
+        "dbrekelmans/browser-driver-installer": "^1.0"
+    }
+}

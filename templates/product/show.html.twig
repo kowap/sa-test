@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <h2 class="text-center mt-5 mb-3">Show Product</h2>
+    <div class="card">
+      <div class="card-header">
+        <a class="btn btn-outline-info float-right" href="{{ path('app_product_index') }}">
+          View All Products
+        </a>
+      </div>
+      <div class="card-body">
+        <b class="text-muted">Name:</b>
+        <p>{{ product.name }}</p>
+        <b class="text-muted">Description:</b>
+        <p>{{ product.description }}</p>
+        <b class="text-muted">Price:</b>
+        <p>{{ product.price }}</p>
+        <b class="text-muted">Photo:</b>
+        <p>{{ product.photo }}</p>
+        <b class="text-muted">Date Created:</b>
+        <p>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</p>
+        <b class="text-muted">Date Updated:</b>
+        <p>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
