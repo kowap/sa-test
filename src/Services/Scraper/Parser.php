@@ -2,8 +2,11 @@
 
 namespace App\Services\Scraper;
 
+use App\DTO\RequestDTO;
+use App\DTO\ResponseDTO;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Panther\Client;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints\Url as UrlConstraint;
 use Symfony\Component\Validator\Validation;
 
@@ -13,10 +16,13 @@ class Parser
     private Client $client;
     private $params;
 
-    public function __construct(ParameterBagInterface $params)
+    private $serializer;
+
+    public function __construct(ParameterBagInterface $params, SerializerInterface $serializer)
     {
         $this->client = Client::createChromeClient(null, [ '--headless', '--disable-dev-shm-usage', '--no-sandbox' ]);
         $this->params = $params;
+        $this->serializer = $serializer;
     }
 
     public function setUrl(string $url): static
@@ -31,29 +37,33 @@ class Parser
         return $this->processing();
     }
 
-    public function processing(): array
+    public function parse(RequestDTO $requestDTO): ResponseDTO
     {
-        $result = [];
+        return $this->processing($requestDTO);
+    }
 
+    public function processing(RequestDTO $requestDTO): ResponseDTO
+    {
         $validator = Validation::createValidator();
         $urlConstraint = new UrlConstraint();
-        $violations = $validator->validate($this->url, $urlConstraint);
+        $violations = $validator->validate($requestDTO->getUrl(), $urlConstraint);
+
         if (count($violations) > 0) {
-            return [];
+            return new ResponseDTO();
         }
 
         $this->client->start();
         $this->client->executeScript('window.scrollTo(0, document.body.scrollHeight);');
-        $this->client->request('GET', $this->url);
+        $this->client->request('GET', $requestDTO->getUrl());
 
         $scriptContent = $this->client->executeScript('return document.querySelector(\'script[type="application/ld+json"][data-seo="Product"][data-module-key="script_seo_markupProduct"]\').textContent;');
-        $productInfo = json_decode($scriptContent);
-        $result['name'] = $productInfo->name;
-        $result['image'] = $this->saveImageByUrl($productInfo->image[0]);
-        $result['description'] = $productInfo->description;
-        $result['price'] = $productInfo->offers->price;
+        $responseDTO = $this->serializer->deserialize($scriptContent, ResponseDTO::class, 'json');
 
-        return $result;
+        if (is_array($responseDTO->images) && count($responseDTO->images) > 0) {
+            $responseDTO->setFirstImage($this->saveImageByUrl($responseDTO->images[0]));
+        }
+
+        return $responseDTO;
     }
 
     private function saveImageByUrl($url): ?string

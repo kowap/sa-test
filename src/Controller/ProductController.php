@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\RequestDTO;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
@@ -26,11 +27,13 @@ class ProductController extends AbstractController
     }
 
     #[Route('/parse', name: 'app_product_parse', methods: ['GET', 'POST'])]
-    public function parse(Request $request, Parser $parser): Response
+    public function parse(Request $request, Parser $parser): JsonResponse
     {
-//        $test_url = 'https://rozetka.com.ua/361128564/p361128564/';
-        $result = $parser->setUrl($request->get('url'))->getData();
-        return new JsonResponse($result);
+        $requestDTO = new RequestDTO();
+        $requestDTO->setUrl($request->get('url'));
+        $responseDTO = $parser->parse($requestDTO);
+
+        return new JsonResponse($responseDTO);
     }
 
     #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]

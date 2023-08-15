@@ -26,9 +26,9 @@ $(document).ready(function (){
         if (response.length !== 0) {
           $('#product_name').val(response.name);
           $('#product_description').val(response.description);
-          $('#product_price').val(response.price);
-          $('#product_photo').val(response.image);
-          $('.product-photo').attr('src', '/uploads/photo/' + response.image)
+          $('#product_price').val(response.offers.price);
+          $('#product_photo').val(response.firstImage);
+          $('.product-photo').attr('src', '/uploads/photo/' + response.firstImage)
           nanobar.go( 100 );
         }
       });
