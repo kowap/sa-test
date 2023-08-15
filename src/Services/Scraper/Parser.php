@@ -4,6 +4,7 @@ namespace App\Services\Scraper;
 
 use App\DTO\RequestDTO;
 use App\DTO\ResponseDTO;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Panther\Client;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -15,7 +16,6 @@ class Parser
     private string $url;
     private Client $client;
     private $params;
-
     private $serializer;
 
     public function __construct(ParameterBagInterface $params, SerializerInterface $serializer)
