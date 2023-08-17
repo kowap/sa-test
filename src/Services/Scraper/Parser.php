@@ -44,14 +44,6 @@ class Parser
 
     public function processing(RequestDTO $requestDTO): ResponseDTO
     {
-        $validator = Validation::createValidator();
-        $urlConstraint = new UrlConstraint();
-        $violations = $validator->validate($requestDTO->getUrl(), $urlConstraint);
-
-        if (count($violations) > 0) {
-            return new ResponseDTO();
-        }
-
         $this->client->start();
         $this->client->executeScript('window.scrollTo(0, document.body.scrollHeight);');
         $this->client->request('GET', $requestDTO->getUrl());

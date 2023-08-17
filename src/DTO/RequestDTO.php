@@ -2,6 +2,9 @@
 
 namespace App\DTO;
 
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class RequestDTO
 {
     private string $url;
@@ -13,6 +16,13 @@ class RequestDTO
 
     public function setUrl(string $url): void
     {
+        $validator = Validation::createValidator();
+        $violations = $validator->validate($url, new Assert\Url());
+
+        if (count($violations) > 0) {
+            throw new \InvalidArgumentException('Invalid URL provided');
+        }
+
         $this->url = $url;
     }
 }

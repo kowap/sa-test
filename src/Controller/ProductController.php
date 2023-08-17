@@ -29,6 +29,7 @@ class ProductController extends AbstractController
     #[Route('/parse', name: 'app_product_parse', methods: ['GET', 'POST'])]
     public function parse(Request $request, Parser $parser): JsonResponse
     {
+
         $requestDTO = new RequestDTO();
         $requestDTO->setUrl($request->get('url'));
         $responseDTO = $parser->parse($requestDTO);
